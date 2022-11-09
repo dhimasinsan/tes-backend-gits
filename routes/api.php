@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\AuthorController;
+use App\Http\Controllers\Api\BookController;
+use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\PublisherController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +18,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::apiResource('author', AuthorController::class);
+    Route::apiResource('book', BookController::class);
+    Route::apiResource('publisher', PublisherController::class);
 });
+
+Route::post('login', LoginController::class)->name('login');
