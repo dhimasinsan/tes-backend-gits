@@ -24,10 +24,19 @@ class PublisherController extends Controller
     public function store(Request $request)
     {
 
-        $request->validate([
+        $validateRequest = Validator::make($request->all(), 
+        [
             'code' => 'required|unique:publishers',
             'name' => 'required'
         ]);
+
+        if($validateRequest->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => 'validation error',
+                'errors' => $validateRequest->errors()
+            ], 400);
+        }
 
         $result = ['message' => 'Add to Publisher successfuly', 'status' => 200];
         $publisher['uuid'] = Str::uuid();
@@ -70,10 +79,19 @@ class PublisherController extends Controller
 
     public function update($id, Request $request)
     {
-        $request->validate([
+        $validateRequest = Validator::make($request->all(), 
+        [
             'code' => 'required',
             'name' => 'required'
         ]);
+
+        if($validateRequest->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => 'validation error',
+                'errors' => $validateRequest->errors()
+            ], 400);
+        }
 
         DB::beginTransaction();
         try {

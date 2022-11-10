@@ -24,13 +24,21 @@ class BookController extends Controller
 
     public function store(Request $request)
     {
-
-        $request->validate([
+        $validateRequest = Validator::make($request->all(), 
+        [
             'code' => 'required|unique:books',
             'name' => 'required',
             'author_id' => 'required|numeric',
             'publisher_id' => 'required|numeric'
         ]);
+
+        if($validateRequest->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => 'validation error',
+                'errors' => $validateRequest->errors()
+            ], 400);
+        }
 
         $result = ['message' => 'Add to Book successfuly', 'status' => 200];
         $book['uuid'] = Str::uuid();
@@ -76,12 +84,21 @@ class BookController extends Controller
     public function update($id, Request $request)
     {
 
-        $request->validate([
+        $validateRequest = Validator::make($request->all(), 
+        [
             'code' => 'required',
             'name' => 'required',
             'author_id' => 'required|numeric',
             'publisher_id' => 'required|numeric'
         ]);
+
+        if($validateRequest->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => 'validation error',
+                'errors' => $validateRequest->errors()
+            ], 400);
+        }
 
         DB::beginTransaction();
         try {
